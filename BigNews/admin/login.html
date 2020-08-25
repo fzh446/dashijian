@@ -38,6 +38,88 @@
     </div>
   </div>
 
+  <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">友情提示</h4>
+        </div>
+        <div class="modal-body">
+          <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
+         
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+    <script>
+      //入口函数
+      $(function(){
+        /* 
+          1.登录按钮点击事件
+          注意点: from表单中的按钮,需要阻止默认跳转
+          
+          1.1 获取输入框文本 username    和    password 
+                           /ˈjuːzərneɪm/    /ˈpæswɜːrd/\
+          1.2 非空判断
+          1.3 ajax发送请求
+          1.4 服务器响应:
+                成功 : 跳转页面
+                失败 :弹窗提示用户原因
+         */
+         $('.input_sub').click(function(e){
+          e.preventDefault();
+          //1.获取输入框文本
+          let username = $('.input_txt').val();
+          let password = $('.input_pass').val();
+          //2.判断非空
+          if (username.length == 0 || password.length == 0) {
+              // alert('用户名不能为空哦')
+              //可以用模态框来显示,更加美观              
+              $('.modal-body>p').text('用户名和密码不能为空哦!');//模态框标题内容可以判断后修改
+              $('#myModal').modal();//模态框的调用
+              return;
+          };
+          $.ajax({
+            url:'http://localhost:8080/api/v1/admin/user/login',
+            type:'post',
+            dataType:'json',
+            data:{
+              username:username,
+              password:password
+            },
+            success: function(backData){
+              console.log(backData);
+              if (backData.code == 200) {
+                   //1.修改模态框的样式
+                  $('.modal-body>p').text('登录成功');
+                   //2.弹出模态框
+                   $('#myModal').modal();
+                   /* 
+                      如果直接href显示地址 模态框不会出现
+                        a.发现问题:登录成功之后 ,模态框不出来
+                        b.分析问题:登录成功之后,会跳转首页.所以模态框一出来页面就跳转走了所以看不见
+                        c.解决问题:给模态框右下角按钮注册一个隐藏事件: 点击按钮隐藏之后才会跳转
+                    */
+                    //3.给模态框注册隐藏事件
+                    $('#myModal').on('hidden.bs.modal',function(){
+                      window.location.href = './index.html';
+                    });
+              } else {
+                //1.修改模态框文本
+                $('.modal-body>p').text(backData.msg);
+                //2.弹出模态框
+                $('#myModal').modal();
+              }
+            }
+          });
+         });
+      })
+    </script>
 </body>
 
 </html>
