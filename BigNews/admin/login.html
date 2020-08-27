@@ -95,6 +95,8 @@
             success: function(backData){
               console.log(backData);
               if (backData.code == 200) {
+                //使用localStorage存储用户的token
+                localStorage.setItem('token',backData.token);
                    //1.修改模态框的样式
                   $('.modal-body>p').text('登录成功');
                    //2.弹出模态框
