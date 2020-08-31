@@ -208,7 +208,24 @@
     <!-- 引入模板引擎js文件 -->
     <script src="./js/template-web.js"></script>
     <script src="./js/jquery-1.12.4.min.js"></script>
+    
+    <script>
+        /* 1.获取从其他页面传递过来的参数: 文章id */
+        let id = window.location.href.split('=')[1];
+        console.log(id);
 
+        //2.请求文章详细信息
+        $.ajax({
+            url:'http://localhost:8080/api/v1/index/article',
+            type:'get',
+            dataType:'json',
+            data:{id:id},
+            success: function(backData){
+                console.log(backData);
+            }
+        });
+
+    </script>
 </body>
 
 </html>
